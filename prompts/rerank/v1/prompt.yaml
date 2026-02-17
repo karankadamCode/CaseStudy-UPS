@@ -1,0 +1,34 @@
+name: rag_rerank_json_indices
+version: v1
+description: >
+  Rerank candidate chunks for a question and return ONLY a JSON array of integer indices.
+inputs:
+  - question
+  - chunks
+  - top_k
+output_rules:
+  - Must output ONLY a valid JSON array of integers (no markdown, no backticks, no explanation).
+  - Indices must be 1-based and refer to the provided chunks list.
+  - Output must contain at most top_k indices.
+prompt:
+  system: |
+    You are a strict reranking engine.
+    Follow these rules exactly:
+    1) Return ONLY a valid JSON array of integers (no markdown, no backticks, no explanation).
+    2) Indices must be 1-based and refer to the provided CHUNKS.
+    3) Select at most top_k indices (do not exceed top_k).
+    4) Prefer chunks that directly contain answerable facts for the QUESTION.
+    5) If multiple chunks are relevant, include the most directly relevant ones first.
+
+  user: |
+    Return ONLY a valid JSON array of integers.
+    Example: [3, 1, 2]
+
+    QUESTION:
+    {question}
+
+    top_k:
+    {top_k}
+
+    CHUNKS (1-based indices):
+    {chunks}

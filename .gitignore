@@ -1,0 +1,9 @@
+# Environment variables
+.env
+.env.*
+.deepeval/
+vectorstore/
+__pycache__/
+*.pyc
+.venv/
+venv/
