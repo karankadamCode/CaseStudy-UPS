@@ -65,6 +65,30 @@ Provide fast, grounded Q&A over one or more PDF documents by:
                                             +------------------------+
 ```
 
+## Model and Design Choices
+
+### Embedding Model
+- Embeddings are generated using an embedding model to convert text chunks into dense vectors.
+- The system is designed to support **open-source sentence-transformer models** (e.g., MiniLM / BGE family) as well as OpenAI embeddings if required.
+- Embeddings are generated once during ingestion and reused at query time.
+- This enables efficient semantic similarity search over large documents.
+
+### Vector Database
+- **FAISS** is used as the vector database.
+- It is lightweight, fast, and well-suited for local experimentation and case studies.
+- The FAISS index is persisted to disk (`vectorstore/faiss_index`) and loaded at runtime.
+
+### Chunking Strategy
+- The system uses **Recursive Character-Based Chunking** via `RecursiveCharacterTextSplitter`.
+- Chunk size is fixed with overlap to preserve context across chunk boundaries.
+- This strategy prioritizes natural text boundaries (paragraphs, sentences) before splitting by characters.
+- Overlap ensures that facts spanning multiple paragraphs remain retrievable.
+
+### Language Model (LLM)
+- The system uses **gpt-4o-mini** for answer generation and optional reranking.
+- The LLM is prompted to answer **strictly from retrieved context** and include citations.
+- Streaming is enabled to improve user experience during response generation.
+
 ## Features
 - PDF ingestion using `PyPDFLoader`
 - Intelligent chunking (RecursiveCharacterTextSplitter with overlap)
