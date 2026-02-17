@@ -88,6 +88,30 @@ Provide fast, grounded Q&A over one or more PDF documents by:
   - DeepEval (AnswerRelevancy, Faithfulness, GEval-based correctness/completeness)
   - Langfuse tracing + metric scoring
 
+### Key Design Decisions
+--------------------
+- FAISS: simple local vector DB, fast, easy to persist, good for case study
+- Chunking: recursive splitter with overlap balances recall + coherence
+- MMR: reduces redundancy in retrieved chunks, improves answer diversity
+- Rerank: improves relevance when retrieval returns mixed chunks (with safe fallback)
+- Strict citation tags: ensures claims are grounded and verifiable
+- Feedback loop: thread-level adaptation improves retrieval after poor answers
+- Async eval: avoids blocking UI response streaming
+
+### Limitations
+-----------
+- LLM rerank may be slower than cross-encoder rerank
+- PDF extraction quality depends on document structure (tables/images may lose fidelity)
+- No BM25 hybrid retrieval unless added (easy extension)
+- Faithfulness metrics are proxies without gold answers
+
+### Suggested Next Improvements
+---------------------------
+- Add true hybrid retrieval (BM25 + vectors)
+- Add cross-encoder reranker (bge-reranker / ms-marco MiniLM)
+- Add structured citation formatting (inline claim-level citations)
+- Add caching for embeddings and retrieval results
+- Add document upload in UI and re-index trigger
 
 ## Repo Structure
 ```bash
